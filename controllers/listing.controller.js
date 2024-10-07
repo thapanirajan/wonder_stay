@@ -1,5 +1,3 @@
-const ExpressError = require("../utils/expressError.js");
-const { wonderSchema } = require("../schema.js");
 const model = require("../models/listing.js");
 
 const handleGetAllListings = async (req, res) => {
@@ -8,7 +6,11 @@ const handleGetAllListings = async (req, res) => {
 };
 
 const handleCreateListing = async (req, res) => {
-    const newListing = new model(req.body.listing);
+    const newListing = new model({
+        ...req.body.listing,
+        owner: req.user._id
+    });
+    console.log(req.user);
     await newListing.save();
     req.flash("success", "New Listing created")
     res.redirect("/listing");
@@ -20,10 +22,7 @@ const handleCreateListingForm = (req, res) => {
 
 const handleListingDetailByid = async (req, res) => {
     const { id } = req.params;
-    let detail = await model.findById(id).populate("reviews").populate({
-        path: "owner",
-        select: "name email"
-    });
+    let detail = await model.findById(id).populate("reviews").populate("owner")
     if (!detail) {
         req.flash("error", "Requested Listing doesnot exists")
         res.redirect("/listing")
@@ -42,6 +41,7 @@ const handleListingDetailByid = async (req, res) => {
 
 const handleEditListingForm = async (req, res) => {
     const { id } = req.params;
+    console.log(id)
     const listing = await model.findById(id);
     res.render("templates/listings/edit", { listing });
 };
@@ -67,17 +67,6 @@ const handleDeleteListing = async (req, res) => {
     res.redirect("/listing");
 };
 
-const validateListing = (req, res, next) => {
-    let { error } = wonderSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
-    }
-};
-
-
 
 module.exports = {
     handleGetAllListings,
@@ -87,5 +76,4 @@ module.exports = {
     handleEditListingForm,
     handleUpdateListingDetails,
     handleDeleteListing,
-    validateListing,
 };

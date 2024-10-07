@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
+const { validateReview } = require("../middleware")
 
 const wrapasync = require("../utils/asyncwrap");
 
 const {
     handlePostReviews,
-    validateReview,
     handleDeleteReview
 } = require("../controllers/review.controller");
 

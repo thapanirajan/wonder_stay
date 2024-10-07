@@ -1,17 +1,6 @@
 const ExpressError = require("../utils/expressError.js");
-const { reviewSchema } = require("../schema.js");
 const model = require("../models/listing.js");
 const Review = require("../models/reviews.model.js")
-
-const validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next()
-    }
-}
 
 const handlePostReviews = async (req, res) => {
     const id = req.params.id
@@ -39,6 +28,5 @@ const handleDeleteReview = async (req, res) => {
 
 module.exports = {
     handlePostReviews,
-    validateReview,
     handleDeleteReview
 };

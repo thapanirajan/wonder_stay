@@ -150,12 +150,15 @@
 <div class="container">
     <div class="detail-container">
         <div class="card">
-
             <h1>
                 <%=detail.title %>
             </h2>
             <img src="<%= detail.image%>" alt />
             <div class="details">
+                <div>
+                    <p>Owned by: <i><%= detail.owner.username %></i></p>
+                    <p>email: <i><%= detail.owner.email %></i></p>
+                </div>
                 <div>
                     <strong>Description: </strong> <span>
                         <%=detail.description %>

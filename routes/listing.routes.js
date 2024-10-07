@@ -8,11 +8,10 @@ const {
     handleEditListingForm,
     handleUpdateListingDetails,
     handleDeleteListing,
-    validateListing,
 } = require("../controllers/listing.controller.js");
 
 const wrapasync = require("../utils/asyncwrap");
-const { isLoggedIn } = require("../middleware.js");
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
 
 // Route to get all listings
@@ -28,12 +27,12 @@ router.get("/create", isLoggedIn, wrapasync(handleCreateListingForm)); // ggg
 router.get("/:id", wrapasync(handleListingDetailByid));
 
 // Render the edit listing form
-router.get("/edit/:id", isLoggedIn, wrapasync(handleEditListingForm)); //gg
+router.get("/edit/:id", isLoggedIn, isOwner, wrapasync(handleEditListingForm)); //gg
 
 // Update a listing by ID
-router.patch("/:id", isLoggedIn, wrapasync(handleUpdateListingDetails));
+router.patch("/:id", isLoggedIn, isOwner, validateListing, wrapasync(handleUpdateListingDetails));
 
 // Delete a listing by ID
-router.delete("/:id", isLoggedIn, wrapasync(handleDeleteListing));
+router.delete("/:id", isLoggedIn, isOwner, wrapasync(handleDeleteListing));
 
 module.exports = router;
